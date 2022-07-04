@@ -10,5 +10,11 @@ TELEGRAM_API_TOKEN = env("TELEGRAM_API_TOKEN")
 ZADARMA_NUMBER = env("ZADARMA_NUMBER")
 SIP = env("SIP")
 
-INNER_NUMBER = env("INNER_NUMBER")
-OUTER_NUMBER = env("OUTER_NUMBER")
+GATE_NAMES = env("GATE_NAMES").split(",")
+
+GATE_NUMBERS = {
+    name: number
+    for name, number
+    in zip(GATE_NAMES, env("GATE_NUMBERS").split(","))
+}
+

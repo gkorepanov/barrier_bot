@@ -3,11 +3,17 @@ import asyncio
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
-from config import TELEGRAM_API_TOKEN
-from gates import open_gates_inner, open_gates_outer
+from config import TELEGRAM_API_TOKEN, GATE_NAMES
+from gates import open_gates
 
+import telebot
+import logging
+
+logger = telebot.logger
+#telebot.logger.setLevel(logging.DEBUG)
 
 auth = 0
+#print(TELEGRAM_API_TOKEN)
 bot = AsyncTeleBot(TELEGRAM_API_TOKEN)
 
 buttons = {}
@@ -20,36 +26,15 @@ def add_button(markup, button_text, button_callback):
     buttons.update({button_text: button_callback})
 
 
-async def button_inner(message):
-    open_gates_inner()
-    await bot.reply_to(message, "Открываю", reply_markup=markup)
+def make_gate_handler(gate_name):
+    async def button_open(message):
+        open_gates(gate_name)
+        await bot.reply_to(message, f"Открываю {gate_name}", reply_markup=markup)
+    return button_open
 
 
-async def button_outer(message):
-    open_gates_outer()
-    await bot.reply_to(message, "Открываю", reply_markup=markup)
-
-
-async def button_exit(message):
-    open_gates_inner()
-    await bot.reply_to(message, "Открываю внутренние ворота", reply_markup=markup)
-    await asyncio.sleep(113)
-    open_gates_outer()
-    await bot.reply_to(message, "Открываю внешние ворота", reply_markup=markup)
-
-
-async def button_enter(message):
-    open_gates_outer()
-    await bot.reply_to(message, "Открываю внешние ворота", reply_markup=markup)
-    await asyncio.sleep(113)
-    open_gates_inner()
-    await bot.reply_to(message, "Открываю внутренние ворота", reply_markup=markup)
-
-
-add_button(markup, "Внутренние", button_inner)
-add_button(markup, "Внешние", button_outer)
-add_button(markup, "Выехать", button_exit)
-add_button(markup, "Заехать", button_enter)
+for gate_name in GATE_NAMES:
+    add_button(markup, gate_name, make_gate_handler(gate_name))
 
 
 @bot.message_handler(commands=["start"])
@@ -59,8 +44,9 @@ async def start(message):
 
 @bot.message_handler(func=lambda message: True)
 async def handle_text(message):
-    if (handler := buttons.get(message.text.strip())) is None:
-        await bot.reply_to(message, "Error", reply_markup=markup)
+    name = message.text.strip()
+    if (handler := buttons.get(name)) is None:
+        await bot.reply_to(message, f"Нет такого шлагбаума: {name}, есть {list(buttons)}", reply_markup=markup)
     else:
         await handler(message)
 

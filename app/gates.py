@@ -1,5 +1,5 @@
 from zadarma.api import ZadarmaAPI
-from config import ZADARMA_API_KEY, ZADARMA_API_SECRET, ZADARMA_NUMBER, INNER_NUMBER, OUTER_NUMBER, SIP
+from config import ZADARMA_API_KEY, ZADARMA_API_SECRET, ZADARMA_NUMBER, GATE_NUMBERS, SIP
 
 
 z_api = ZadarmaAPI(key=ZADARMA_API_KEY, secret=ZADARMA_API_SECRET)
@@ -19,9 +19,6 @@ def call_from(from_number, to_number):
     )
 
 
-def open_gates_inner():
-    return call_number(INNER_NUMBER)
+def open_gates(gates_name):
+    return call_number(GATE_NUMBERS[gates_name])
 
-
-def open_gates_outer():
-    return call_number(OUTER_NUMBER)
