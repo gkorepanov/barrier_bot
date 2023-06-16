@@ -6,3 +6,4 @@ python-dotenv
 iso639-lang
 more-itertools
 tenacity
+requests
