@@ -1,17 +1,22 @@
-FROM python:3.10.0-slim-buster
+FROM python:3.8-slim
 
-ENV POETRY_VERSION=1.1.4
+RUN \
+    set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y --no-install-recommends \
+    python3-pip \
+    build-essential \
+    python3-venv \
+    ffmpeg \
+    git \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-RUN pip install "poetry==$POETRY_VERSION"
+RUN pip3 install -U pip && pip3 install -U wheel && pip3 install -U setuptools==59.5.0
+COPY ./requirements.txt /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt && rm -r /tmp/requirements.txt
 
-WORKDIR /morder_gates
+COPY . /code
+WORKDIR /code
 
-COPY poetry.lock pyproject.toml /morder_gates/
-
-RUN apt-get update && apt-get -y install libpq-dev gcc
-RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
-
-COPY ./app /morder_gates/app
-
-ENTRYPOINT ["python"]
-CMD ["app/bot.py"]
+CMD ["bash"]

@@ -1,8 +1,0 @@
-version: "3.3"
-services:
-  mordor_gates:
-    build:
-      context: .
-    env_file:
-      - .env
-    restart: always

@@ -1,0 +1,11 @@
+telegram_token: XXX  # required
+allowed_telegram_usernames: []  # if empty, the bot is available to anyone
+admin_chat_id: null  # exceptions will be sent there
+admin_usernames: []  # at least 1 should be here
+support_username: support
+bot_username: "bot_username"
+bot_name: "Bot Name"
+zadarma_sip: XXX  # required
+zadarma_api_key: XXX  # required
+zadarma_api_secret: XXX  # required
+zadarma_number: XXX  # required

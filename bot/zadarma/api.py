@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-__version__ = "1.1.0"
 import sys
 from hashlib import sha1, md5
 from collections import OrderedDict
 
-if sys.version_info.major > 2:
-    from urllib.parse import urlencode
-else:
-    from urllib import urlencode
+from urllib.parse import urlencode
 import hmac
 import requests
 import base64
