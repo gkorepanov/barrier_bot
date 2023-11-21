@@ -107,6 +107,7 @@ async def show_barriers_handler(update: Update, context: CallbackContext) -> Non
 async def open_barrier_handler(update: Update, context: CallbackContext) -> None:
     await update.callback_query.answer(text="Открываю шлагбаум.")
     barrier_id = md.BarrierData.load(update.callback_query.data).barrier_id
+    logger.info(barrier_id)
     barrier = db.get_barrier(barrier_id)
     accessible_barriers = db.get_user_attribute(update.effective_user.id, "barriers", default=[])
     if barrier["_id"] not in accessible_barriers:
@@ -116,8 +117,7 @@ async def open_barrier_handler(update: Update, context: CallbackContext) -> None
             text = call_number(barrier["phone_number"])
         except Exception as e:
             text = str(e)
-
-        await send_reply(
-            message=update.effective_message,
-            text=f"Позвонил на шлагбаум через API. Результат:\n{text}",
-        )
+            await send_reply(
+                message=update.effective_message,
+                text=f"Позвонил на шлагбаум через API. Ошибка:\n{text}",
+            )
