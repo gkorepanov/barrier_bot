@@ -43,7 +43,7 @@ async def add_barrier_handler(update: Update, context: CallbackContext) -> None:
         )
         return
     if (
-        not phone_number.startswith("+79") or
+        not phone_number.startswith("+7") or
         not all(x.isdigit() for x in phone_number[1:]) or
         len(phone_number) != 12
     ):
